@@ -49,7 +49,7 @@ cp-kafka:
   persistence:
     enabled: true
     # storageClass: ""
-    size: 5Gi
+    size: 10Gi
     disksPerBroker: 1
   resources: {}
   ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
@@ -110,8 +110,8 @@ cp-kafka-rest:
 ## ------------------------------------------------------
 cp-kafka-connect:
   enabled: true
-  image: confluentinc/cp-kafka-connect
-  imageTag: 5.1.2
+  image: deepaksood619/kafka-connect
+  imageTag: latest
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
   ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   imagePullSecrets:
@@ -131,7 +131,7 @@ cp-kafka-connect:
 ## KSQL Server
 ## ------------------------------------------------------
 cp-ksql-server:
-  enabled: true
+  enabled: false
   image: confluentinc/cp-ksql-server
   imageTag: 5.1.2
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.

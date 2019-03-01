@@ -19,7 +19,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: ksql-demo
-  namespace: default
+  namespace: kafka
 spec:
   containers:
   - name: ksql-datagen-pageviews
