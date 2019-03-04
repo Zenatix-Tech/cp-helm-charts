@@ -7,6 +7,7 @@ metadata:
     chart: {{ template "cp-kafka.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    metrics: prom
 spec:
   ports:
     - port: 9092
