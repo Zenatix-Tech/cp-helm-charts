@@ -66,7 +66,8 @@ echo "$MESSAGE" | kafka-console-producer --broker-list ke-cp-kafka-headless:9092
 
 # Consume a test message from the topic
 kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic smap_telemetry_data_test --max-messages 1
-kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic smap_telemetry_data_test
+
+kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic test_smap_telemetry_data
 
 ```
 
@@ -76,10 +77,16 @@ kubectl get pods -n kafka
 
 kubectl exec -n kafka -it ke-cp-kafka-connect-6fd675f9cb-tg2x2 -c cp-kafka-connect-server -- /bin/bash
 
+#Prod connector
 curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://104.211.220.105:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.kcql":"INSERT INTO smap_telemetry_data SELECT * FROM telemetry/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://localhost:8083/connectors
+
+#Test connector
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses-test", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://104.211.220.105:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.kcql":"INSERT INTO test_smap_telemetry_data SELECT * FROM /telemetry_test/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://localhost:8083/connectors
 
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/
 curl -s -X GET http://localhost:8083/connectors/
+
+curl -X DELETE http://localhost:8083/connectors/smap-mqtt-source-lenses-test
 
 ```
 
