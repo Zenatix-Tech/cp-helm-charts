@@ -15,12 +15,9 @@ spec:
     spec:
       containers:
       - name: kafka-manager
-        image: solsson/kafka-manager@sha256:28b1a0b355f3972a9e3b5ac82abcbfee9a72b66a2bfe86094f6ea2caad9ce3a7
+        image: hlebalbau/kafka-manager:1.3.3.22
         ports:
-        - containerPort: 80
+        - containerPort: 9000
         env:
         - name: ZK_HOSTS
           value: ke-cp-zookeeper-0.ke-cp-zookeeper-headless:2181,ke-cp-zookeeper-1.ke-cp-zookeeper-headless:2181,ke-cp-zookeeper-2.ke-cp-zookeeper-headless:2181
-        command:
-        - ./bin/kafka-manager
-        - -Dhttp.port=80

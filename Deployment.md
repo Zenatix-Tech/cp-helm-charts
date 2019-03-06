@@ -69,13 +69,23 @@ kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic smap
 
 kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic test_smap_telemetry_data
 
+kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic smap_telemetry_data
+
+kafka-console-consumer --bootstrap-server ke-cp-kafka-headless:9092 --topic druid_telemetry_data --from-beginning
+
+kafka-consumer-groups --bootstrap-server ke-cp-kafka-headless:9092 --list
+
+kafka-consumer-groups --bootstrap-server ke-cp-kafka-headless:9092 --describe --group kafka_druid_republisher_group --members
+
+kafka-consumer-groups --bootstrap-server ke-cp-kafka-headless:9092 --describe --group kafka_druid_republisher_group --offsets
+
 ```
 
 #### Add worker to mqtt connector
 ```bash
 kubectl get pods -n kafka
 
-kubectl exec -n kafka -it ke-cp-kafka-connect-6fd675f9cb-tg2x2 -c cp-kafka-connect-server -- /bin/bash
+kubectl exec -n kafka -it ke-cp-kafka-connect-5447f6bfb-mlbgh -c cp-kafka-connect-server -- /bin/bash
 
 #Prod connector
 curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://104.211.220.105:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.kcql":"INSERT INTO smap_telemetry_data SELECT * FROM telemetry/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://localhost:8083/connectors
@@ -96,10 +106,18 @@ curl -X DELETE http://localhost:8083/connectors/smap-mqtt-source-lenses-test
 kubectl apply -f yahoo-kafka-manager/
 ```
 
+**Deploy burrow**
+```bash
+kubectl apply -f linkedin-burrow/
+```
+
 ### Delete Everything
 ```bash
 #Delete kafka manager
 kubectl delete -f yahoo-kafka-manager/
+
+#Delete linkedin burrow
+kubectl delete -f linkedin-burrow/
 
 #Delete test containers
 kubectl delete -f examples/kafka-client.yaml
