@@ -5,9 +5,10 @@ metadata:
   namespace: kafka
 spec:
   type: LoadBalancer
+  loadBalancerIP: 104.211.215.147
   selector:
     app: kafka-manager
   ports:
   - protocol: TCP
-    port: 9000
+    port: 80
     targetPort: 9000
