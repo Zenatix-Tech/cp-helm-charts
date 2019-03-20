@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cp-kafka.fullname" . }}-external-0
+  labels:
+    app: {{ template "cp-kafka.name" . }}
+    chart: {{ template "cp-kafka.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 104.211.226.230
+  ports:
+    - port: 31090
+      name: external-broker-0
+  selector:
+    app: {{ template "cp-kafka.name" . }}
+    release: {{ .Release.Name }}
+    statefulset.kubernetes.io/pod-name: ke-cp-kafka-0
