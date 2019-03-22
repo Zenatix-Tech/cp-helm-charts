@@ -40,6 +40,7 @@ configurationOverrides:
   # "min.insync.replicas": 2
   "auto.create.topics.enable": true
   "delete.topic.enable": true
+  "log.retention.hours": "48"
 
   # Options required for external access via NodePort
   # ref:

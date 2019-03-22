@@ -61,6 +61,17 @@ kafka-topics --zookeeper ke-cp-zookeeper-headless:2181 --list
 # Create the topic
 kafka-topics --zookeeper ke-cp-zookeeper-headless:2181 --topic smap_telemetry_data --create --partitions 3 --replication-factor 1 --if-not-exists
 
+# Describe a topic
+kafka-configs --bootstrap-server ke-cp-kafka-headless:9092 --entity-type brokers --entity-default --describe
+kafka-configs --zookeeper ke-cp-zookeeper-headless:2181 --entity-type topics --entity-name smap_telemetry_data --describe
+
+# Add config
+kafka-configs --zookeeper ke-cp-zookeeper-headless:2181 --entity-type topics --entity-name smap_telemetry_data --alter --add-config retention.ms=604800000
+kafka-configs --zookeeper ke-cp-zookeeper-headless:2181 --entity-type topics --entity-name druid_telemetry_data --alter --add-config retention.ms=172800000
+
+kafka-configs --zookeeper ke-cp-zookeeper-headless:2181 --entity-type topics --entity-name test_smap_telemetry_data --alter --add-config retention.ms=172800000
+kafka-configs --zookeeper ke-cp-zookeeper-headless:2181 --entity-type topics --entity-name dev_druid_telemetry_data --alter --add-config retention.ms=172800000
+
 # Create a message
 MESSAGE="`date -u`"
 
@@ -108,7 +119,7 @@ kubectl exec -n kafka -it ke-cp-kafka-connect-5447f6bfb-d4kht -c cp-kafka-connec
 curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO smap_telemetry_data SELECT * FROM telemetry/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
 
 #Test connector
-curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses-test", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO dev_smap_telemetry_data SELECT * FROM telemetry_dev/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses-test", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO test_smap_telemetry_data SELECT * FROM /telemetry_test/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
 
 #Update a connector
 
@@ -126,7 +137,7 @@ curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses/tasks/0/status
 
 # Delete a connector
-curl -X DELETE http://localhost:8083/connectors/smap-mqtt-source-lenses-test
+curl -X DELETE http://e-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test
 
 ```
 
