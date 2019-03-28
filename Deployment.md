@@ -136,6 +136,12 @@ curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses/tasks
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses/tasks/0/status
 
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/status
+
+#restart connector
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/tasks/0/restart
+
 # Delete a connector
 curl -X DELETE http://e-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test
 
