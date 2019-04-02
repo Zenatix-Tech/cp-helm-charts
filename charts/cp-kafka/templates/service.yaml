@@ -12,6 +12,8 @@ spec:
   ports:
     - port: 9092
       name: broker
+    - name: metrics
+      port: {{ .Values.prometheus.jmx.port }}
   selector:
     app: {{ template "cp-kafka.name" . }}
     release: {{ .Release.Name }}

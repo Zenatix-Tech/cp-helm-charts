@@ -12,6 +12,8 @@ spec:
   ports:
     - name: schema-registry
       port: {{ .Values.servicePort }}
+    - name: metrics
+      port: {{ .Values.prometheus.jmx.port }}
   selector:
     app: {{ template "cp-schema-registry.name" . }}
     release: {{ .Release.Name }}

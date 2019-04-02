@@ -13,6 +13,8 @@ spec:
   ports:
     - port: {{ .Values.clientPort }}
       name: client
+    - name: metrics
+      port: {{ .Values.prometheus.jmx.port }}
   selector:
     app: {{ template "cp-zookeeper.name" . }}
     release: {{ .Release.Name }}

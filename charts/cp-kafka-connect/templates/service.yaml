@@ -12,6 +12,8 @@ spec:
   ports:
     - name: kafka-connect
       port: {{ .Values.servicePort }}
+    - name: metrics
+      port: {{ .Values.prometheus.jmx.port }}
   selector:
     app: {{ template "cp-kafka-connect.name" . }}
     release: {{ .Release.Name }}
