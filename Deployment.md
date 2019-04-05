@@ -99,12 +99,12 @@ kafka-consumer-groups --bootstrap-server ke-cp-kafka-headless:9092 --describe --
 #testing from outside the cluster
 docker run \
 --rm \
-confluentinc/cp-kafka:5.1.0 \
+confluentinc/cp-kafka:5.2.0 \
 kafka-console-consumer --bootstrap-server kafka0.zenatix.com:31090,kafka1.zenatix.com:31091,kafka2.zenatix.com:31092 --topic smap_telemetry_data --from-beginning
 
 docker run \
 --rm \
-confluentinc/cp-kafka:5.1.0 \
+confluentinc/cp-kafka:5.2.0 \
 kafka-console-consumer --bootstrap-server 104.211.226.230:31090,104.211.201.77:31091,104.211.222.34:31092 --topic smap_telemetry_data --from-beginning
  
 ```
@@ -113,13 +113,13 @@ kafka-console-consumer --bootstrap-server 104.211.226.230:31090,104.211.201.77:3
 ```bash
 kubectl get pods -n kafka
 
-kubectl exec -n kafka -it ke-cp-kafka-connect-5447f6bfb-h5pws -c cp-kafka-connect-server -- /bin/bash
+kubectl exec -n kafka -it ke-cp-kafka-connect-658bfcd6fb-852fv -c cp-kafka-connect-server -- /bin/bash
 
 #Prod connector
-curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"smap-mqtt-source-lenses-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO smap_telemetry_data SELECT * FROM telemetry/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "mqtt-source-lenses", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"mqtt-source-lenses-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO smap_telemetry_data SELECT * FROM telemetry/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
 
 #Test connector for locust topic
-curl -s -X POST -H "Content-Type: application/json" --data '{"name": "smap-mqtt-source-lenses-test", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"smap-mqtt-source-lenses-test-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO test_smap_telemetry_data SELECT * FROM /telemetry_test/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "mqtt-source-lenses-test", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"mqtt-source-lenses-test-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO test_smap_telemetry_data SELECT * FROM /telemetry_test/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
 
 # Stress Tester connector emqx benchmark
 curl -s -X POST -H "Content-Type: application/json" --data '{"name": "bench-test", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"bench-test-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO bench_data SELECT * FROM bench/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
@@ -127,23 +127,23 @@ curl -s -X POST -H "Content-Type: application/json" --data '{"name": "bench-test
 #Update a connector
 
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/
-curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses
-curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test
-curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/config
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test/config
 
 # Updating a connector
 curl -s -X PUT -H "Content-Type: application/json"  --data '{"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO smap_telemetry_data SELECT * FROM telemetry/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}' http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses/config
 
 # Status of connector
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/bench-test/status
-curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses/tasks
-curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses/tasks/0/status
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses/tasks
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses/tasks/0/status
 
-curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/status
+curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test/status
 
 #restart connector
-curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/restart
-curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/smap-mqtt-source-lenses-test/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test/tasks/0/restart
 
 # Delete a connector
 curl -X DELETE http://ke-cp-kafka-connect.kafka:8083/connectors/bench-test
