@@ -130,6 +130,9 @@ curl -s -X POST -H "Content-Type: application/json" --data '{"name": "trent-smap
 #Prod connector for subscribing telemetry/spar/+/+ and publishing to smap_spar
 curl -s -X POST -H "Content-Type: application/json" --data '{"name": "spar-smap_spar", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"spar-smap-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO smap_spar SELECT * FROM telemetry/spar/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
 
+#Prod connector for subscribing telemetry/motherdairy/+/+ and publishing to smap_motherdairy
+curl -s -X POST -H "Content-Type: application/json" --data '{"name": "motherdairy-smap_motherdairy", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"motherdairy-smap-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO smap_motherdairy SELECT * FROM telemetry/motherdairy/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
+
 #Test connector for subscribing telemetry/test_archiver/+/+ and publishing to test_smap
 curl -s -X POST -H "Content-Type: application/json" --data '{"name": "test_archiver-test_smap", "config": {"connector.class": "com.datamountaineer.streamreactor.connect.mqtt.source.MqttSourceConnector", "tasks.max":"1", "connect.mqtt.hosts":"tcp://mqtt.vernemq:1883", "connect.mqtt.username":"zenatix_mqtt_client", "connect.mqtt.password":"xitanez123", "connect.mqtt.client.id":"test_archiver-test_smap-client-id", "connect.mqtt.service.quality":"1", "connect.mqtt.clean":"false", "connect.mqtt.kcql":"INSERT INTO test_smap SELECT * FROM telemetry/test_archiver/+/+ WITHCONVERTER=`com.datamountaineer.streamreactor.connect.converters.source.BytesConverter`"}}' http://ke-cp-kafka-connect.kafka:8083/connectors
 
@@ -156,8 +159,12 @@ curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lens
 curl -s -X GET http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test/status
 
 #restart connector
-curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/trent-smap_trent/restart
-curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/mqtt-source-lenses-test/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/trent-smap_trent/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/iiitdarchiver-smap_iiitd/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/dominos-smap_dominos/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/spar-smap_spar/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/motherdairy-smap_motherdairy/tasks/0/restart
+curl -s -X POST http://ke-cp-kafka-connect.kafka:8083/connectors/test_archiver-test_smap/tasks/0/restart
 
 # Delete a connector
 curl -X DELETE http://ke-cp-kafka-connect.kafka:8083/connectors/test_archiver-smap_test
