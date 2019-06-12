@@ -7,7 +7,6 @@ metadata:
     chart: {{ template "cp-kafka-rest.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    metrics: prom
 spec:
   ports:
     - name: rest-proxy
