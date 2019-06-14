@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 4
+replicaCount: 5
 
 ## Image Info
 ## ref: https://hub.docker.com/r/confluentinc/cp-kafka/
@@ -33,6 +33,25 @@ configurationOverrides:
   "config.storage.replication.factor": "3"
   "offset.storage.replication.factor": "3"
   "status.storage.replication.factor": "3"
+  "heartbeat.interval.ms": "5000"
+  "session.timeout.ms": "120000"
+  "connections.max.idle.ms": "540000"
+  "receive.buffer.bytes": "32768"
+  "request.timeout.ms": "40000"
+  "send.buffer.bytes": "131072"
+  "worker.sync.timeout.ms": "3000"
+  "worker.unsync.backoff.ms": "300000"
+  "metadata.max.age.ms": "300000"
+  "reconnect.backoff.ms": "50"
+  "retry.backoff.ms": "100"
+
+  "rebalance.timeout.ms": "120000"
+  "offset.flush.interval.ms": "60000"
+  "offset.flush.timeout.ms": "5000"
+  "reconnect.backoff.max.ms": "1000"
+  "task.shutdown.graceful.timeout.ms": "5000"
+#  "max.poll.interval.ms": ""
+  "max.poll.records": "50"
 
 ## Kafka Connect JVM Heap Option
 heapOptions: "-Xmx1G -Xms1G"

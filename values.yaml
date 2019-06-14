@@ -109,7 +109,7 @@ cp-kafka-rest:
 ## Kafka Connect
 ## ------------------------------------------------------
 cp-kafka-connect:
-  enabled: true
+  enabled: false
   image: deepaksood619/kafka-connect
   imageTag: 5.2.1
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
