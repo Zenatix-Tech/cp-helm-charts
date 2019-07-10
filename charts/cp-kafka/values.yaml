@@ -41,6 +41,9 @@ configurationOverrides:
   "auto.create.topics.enable": true
   "delete.topic.enable": true
   "log.retention.hours": "48"
+  "message.max.bytes": "15728640"
+  "replica.fetch.max.bytes": "15728640"
+  "max.poll.interval.ms": "600000"
 
   ## Options required for external access via NodePort
   ## ref:
