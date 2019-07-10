@@ -239,3 +239,10 @@ kubectl delete -f examples/zookeeper-client.yaml
 helm delete --purge ke
 
 ```
+
+### lenses connector
+```bash
+cd lib/
+docker-compose -f docker-compose-kafka-connect.yml build
+docker-compose -f docker-compose-kafka-connect.yml push
+```
