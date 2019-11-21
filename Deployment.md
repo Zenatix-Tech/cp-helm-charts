@@ -2,14 +2,12 @@
 
 ```bash
 kubectl create namespace kafka
-helm install --name ke -f values.yaml --namespace kafka .
+helm3 install ke -f values.yaml --namespace kafka .
 
 #upgrade
-helm upgrade -f values.yaml ke .
+helm3 upgrade -f values.yaml ke .
 
-#others
-helm install --set cp-schema-registry.enabled=false,cp-kafka-rest.enabled=false,cp-kafka-connect.enabled=false confluent/cp-helm-charts
-
+helm3 delete --purge ke
 ```
 
 ### Testing containers
@@ -100,7 +98,7 @@ kafka-consumer-groups --bootstrap-server ke-cp-kafka-headless:9092 --describe --
 docker run \
 --rm \
 confluentinc/cp-kafka:5.2.0 \
-kafka-console-consumer --bootstrap-server kafka0.zenatix.com:31090,kafka1.zenatix.com:31091,kafka2.zenatix.com:31092 --topic smap_samhi
+kafka-console-consumer --bootstrap-server kafka0.zenatix.com:31090,kafka1.zenatix.com:31091,kafka2.zenatix.com:31092 --topic druid_telemetry_data_Rockman
 
 docker run \
 --rm \
