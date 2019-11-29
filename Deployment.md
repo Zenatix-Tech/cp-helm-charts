@@ -98,12 +98,12 @@ kafka-consumer-groups --bootstrap-server ke-cp-kafka-headless:9092 --describe --
 docker run \
 --rm \
 confluentinc/cp-kafka:5.2.0 \
-kafka-console-consumer --bootstrap-server kafka0.zenatix.com:31090,kafka1.zenatix.com:31091,kafka2.zenatix.com:31092 --topic druid_telemetry_data_Rockman
+kafka-console-consumer --bootstrap-server <dns> --topic druid_telemetry_data_Rockman
 
 docker run \
 --rm \
 confluentinc/cp-kafka:5.2.0 \
-kafka-console-consumer --bootstrap-server 104.211.226.230:31090,104.211.201.77:31091,104.211.222.34:31092 --topic telemetry_data --from-beginning
+kafka-console-consumer --bootstrap-server <ip> --topic telemetry_data --from-beginning
  
 ```
 
